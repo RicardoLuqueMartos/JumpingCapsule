@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float sprintMulti = 1.5f;
     [Range(5f, 20f)]
     [SerializeField] private float speed = 10;
+   
     [Range(100f, 500f)]
     [SerializeField] private float jumpForce = 10;
     [SerializeField] private float movementX;
@@ -37,8 +38,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {
-        if (IsGrounded()) MovePlayer();        
+    {          
+        MovePlayer();        
     }
     
     bool IsGrounded()
@@ -74,7 +75,12 @@ public class PlayerController : MonoBehaviour
             CameraDirectionToPlayer();
 
         Vector3 movement = new Vector3(movementX, 0.0f, movementZ);
-        transform.Translate(movement * (Time.deltaTime * (speed * sprintValue)));
+
+        float moveSpeed = speed;
+        if (!isJumping && isSprinting) moveSpeed = speed * sprintValue;
+        else if (isJumping) moveSpeed = speed * .5f;
+
+        transform.Translate(movement * (Time.deltaTime * moveSpeed));
     }
 
     void CameraDirectionToPlayer()
